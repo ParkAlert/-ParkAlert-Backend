@@ -1,22 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { ConfigService } from "@nestjs/config";
 
-describe('AppController', () => {
+describe("root", () => {
+  let appService: AppService;
   let appController: AppController;
+  let configService: ConfigService;
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
-
-    appController = app.get<AppController>(AppController);
+  beforeEach(() => {
+    appService = new AppService();
+    appController = new AppController(appService, configService);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it("should return 'Server is running'", () => {
+    expect(appController.checkServerStatus()).toBe("Server is running");
   });
 });
