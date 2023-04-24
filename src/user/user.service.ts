@@ -32,9 +32,11 @@ export class UserService {
       data.oldPassword,
       user.password
     );
+
     if (!isValidPassword) {
       throw new ForbiddenException("Password is wrong");
     }
+
     user.password = data.newPassword;
     user.password = await bcrypt.hash(user.password, saltLength);
     const updatedUser = await user.save();
