@@ -4,39 +4,71 @@ import {
   Get,
   Post,
   UsePipes,
-  Param,
+  Res,
   Put,
   ValidationPipe,
   HttpStatus,
+  UseGuards,
+  Req,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { userDto, updatePasswordDto } from "./user.dto";
 import { ApiOperation, ApiTags, ApiResponse } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
+import { Request } from "express";
+import { AuthService } from "../auth/auth.service";
+import * as cookieParser from "cookie-parser";
 
 @ApiTags("User")
 @Controller("users")
 @UsePipes(ValidationPipe)
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService
+  ) {}
   @Post()
   @ApiOperation({ summary: "Create a new user" })
   create(@Body() body: userDto) {
     return this.userService.create(body);
   }
 
-  @Get(":id")
-  @ApiOperation({ summary: "Find user by it's id" })
-  findById(@Param("id") id: string) {
-    return this.userService.findById(id);
-  }
-
-  @Put("/:id/password")
-  @ApiOperation({ summary: "Change user password by it's id" })
+  @Put("/password")
+  @UseGuards(AuthGuard("local"))
+  @UseGuards(AuthGuard("cookie"))
+  @ApiOperation({ summary: "Change user password by it's e-mail" })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
     description: "Password is wrong",
   })
-  updateById(@Param("id") id: string, @Body() body: updatePasswordDto) {
-    return this.userService.updateById(id, body);
+  updateByEmail(@Body() body: updatePasswordDto, @Req() request: Request) {
+    const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
+    this.authService.removeAuth(sessionId);
+    return this.userService.updateByEmail(body);
+  }
+
+  @UseGuards(AuthGuard("cookie"))
+  @Get("/isAuth")
+  isAuth(@Req() request: Request) {
+    return request.user;
+  }
+
+  @UseGuards(AuthGuard("local"))
+  @Post("/signin")
+  signin(@Req() request: Request, @Res({ passthrough: true }) res: any) {
+    //有了就沒發，造成沒有新的id出來
+    const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
+    this.authService.removeAuth(sessionId);
+    request.session["user"] = request.user;
+    this.authService.saveAuth(request.user["email"], request.sessionID);
+    res.cookie("sessionId", request.sessionID);
+    return request.user;
+  }
+
+  @UseGuards(AuthGuard("cookie"))
+  @Get("/signout")
+  signout(@Req() request: Request) {
+    const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
+    return this.authService.removeAuth(sessionId);
   }
 }

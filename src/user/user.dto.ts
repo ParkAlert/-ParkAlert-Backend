@@ -23,8 +23,25 @@ export class updatePasswordDto {
   email: string;
 
   @ApiProperty()
-  oldPassword: string;
+  password: string;
 
   @ApiProperty()
   newPassword: string;
+}
+
+export class userSessionDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  sessionId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  expirationDate: Date;
 }
