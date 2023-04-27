@@ -28,5 +28,11 @@ module.exports = {
 		"no-unused-vars": ["warn", { args: "none" }],
 		"prefer-destructuring": ["error", { object: false, array: false }],
 		"consistent-return": ["off"],
+		"prettier/prettier": [
+			"error",
+			{
+				endOfLine: "auto",
+			},
+		],
 	},
 };
