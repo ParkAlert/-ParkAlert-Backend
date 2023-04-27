@@ -32,6 +32,8 @@ module.exports = {
 			"error",
 			{
 				endOfLine: "auto",
+				useTabs: true,
+				arrowParens: "avoid",
 			},
 		],
 	},
