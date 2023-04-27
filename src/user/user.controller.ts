@@ -70,8 +70,8 @@ export class UserController {
 		res.cookie("sessionId", request.sessionID, {
 			expires: new Date(Date.now() + 3600000),
 			httpOnly: true,
-			secure: false,
-			sameSite: "strict",
+			secure: true,
+			sameSite: "None",
 		});
 		return request.user;
 	}
