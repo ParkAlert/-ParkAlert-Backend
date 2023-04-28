@@ -10,7 +10,6 @@ import {
 	HttpStatus,
 	UseGuards,
 	Req,
-	Header,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { userDto, updatePasswordDto } from "./user.dto";
@@ -50,13 +49,19 @@ export class UserController {
 
 	@UseGuards(AuthGuard("cookie"))
 	@Get("/isAuth")
+	@ApiOperation({ summary: "Check auth status" })
 	isAuth(@Req() request: Request) {
 		return request.user;
 	}
 
 	@UseGuards(AuthGuard("local"))
 	@Post("/signin")
-	signin(@Req() request: Request, @Res({ passthrough: true }) res: any) {
+	@ApiOperation({ summary: "Just signin" })
+	signin(
+		@Req() request: Request,
+		@Res({ passthrough: true }) res: any,
+		@Body() body: userDto
+	) {
 		//有了就沒發，造成沒有新的id出來
 		const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
 		this.authService.removeAuth(sessionId);
@@ -65,15 +70,15 @@ export class UserController {
 		res.cookie("sessionId", request.sessionID, {
 			expires: new Date(Date.now() + 3600000),
 			httpOnly: true,
-			secure: false,
-			sameSite: "strict",
+			secure: true,
+			sameSite: "None",
 		});
-
 		return request.user;
 	}
 
 	@UseGuards(AuthGuard("cookie"))
 	@Get("/signout")
+	@ApiOperation({ summary: "Just signout" })
 	signout(@Req() request: Request) {
 		const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
 		return this.authService.removeAuth(sessionId);
