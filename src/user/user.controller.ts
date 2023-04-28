@@ -62,9 +62,10 @@ export class UserController {
 		@Res({ passthrough: true }) res: any,
 		@Body() body: userDto
 	) {
-		//有了就沒發，造成沒有新的id出來
-		const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
-		this.authService.removeAuth(sessionId);
+		// 有了就沒發，造成沒有新的id出來
+		// 之後要加這段，邏輯重構!
+		// const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
+		// this.authService.removeAuth(sessionId);
 		request.session["user"] = request.user;
 		this.authService.saveAuth(request.user["email"], request.sessionID);
 		res.cookie("sessionId", request.sessionID, {
