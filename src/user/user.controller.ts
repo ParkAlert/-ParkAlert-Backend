@@ -33,21 +33,7 @@ export class UserController {
 		return this.userService.create(body);
 	}
 
-	@Put("/password")
-	@UseGuards(AuthGuard("local"))
-	@UseGuards(AuthGuard("cookie"))
-	@ApiOperation({ summary: "Change user password by it's e-mail" })
-	@ApiResponse({
-		status: HttpStatus.FORBIDDEN,
-		description: "Password is wrong",
-	})
-	updateByEmail(@Body() body: updatePasswordDto, @Req() request: Request) {
-		const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
-		this.authService.removeAuth(sessionId);
-		return this.userService.updateByEmail(body);
-	}
-
-	@UseGuards(AuthGuard("cookie"))
+	@UseGuards(AuthGuard("jwt"))
 	@Get("/isAuth")
 	@ApiOperation({ summary: "Check auth status" })
 	isAuth(@Req() request: Request) {
@@ -62,26 +48,7 @@ export class UserController {
 		@Res({ passthrough: true }) res: any,
 		@Body() body: userDto
 	) {
-		// 有了就沒發，造成沒有新的id出來
-		// 之後要加這段，邏輯重構!
-		// const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
-		// this.authService.removeAuth(sessionId);
-		request.session["user"] = request.user;
-		this.authService.saveAuth(request.user["email"], request.sessionID);
-		res.cookie("sessionId", request.sessionID, {
-			expires: new Date(Date.now() + 3600000),
-			httpOnly: true,
-			secure: true,
-			sameSite: "None",
-		});
-		return request.user;
-	}
-
-	@UseGuards(AuthGuard("cookie"))
-	@Get("/signout")
-	@ApiOperation({ summary: "Just signout" })
-	signout(@Req() request: Request) {
-		const sessionId: any = cookieParser.JSONCookies(request.cookies).sessionId;
-		return this.authService.removeAuth(sessionId);
+		const jwt = this.authService.generateJwt(body.email);
+		return jwt;
 	}
 }

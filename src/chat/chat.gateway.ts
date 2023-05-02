@@ -11,21 +11,32 @@ import {
 import { Socket } from "dgram";
 
 import { Server } from "socket.io";
+import { JwtStrategy } from "../auth/jwt.strategy";
+import { AuthService } from "src/auth/auth.service";
+import { ChatService } from "./chat.service";
+import { Injectable } from "@nestjs/common";
 
 @WebSocketGateway({
 	transports: ["websocket", "polling", "flashsocket"],
 	cors: { origin: "http://localhost:3000" },
 })
+@Injectable()
 export class ChatGateway implements OnModuleInit {
+	constructor(private readonly chatService: ChatService) {}
 	@WebSocketServer()
 	server: Server;
-
+	userEmail = "";
 	onModuleInit() {
 		this.server.on("connection", socket => {
-			console.log("It is connecting");
+			if (socket.handshake.headers.authorization) {
+				const token = socket.handshake.headers.authorization.replace(
+					"Bearer ",
+					""
+				);
+				this.userEmail = this.chatService.getUserInfo(token).email;
+				console.log(this.userEmail + " is Connected");
+			}
 
-			//console.log(socket.handshake.headers["set-cookie"]);
-			//console.log(username + " is connect");
 			socket.join("chatRoom");
 		});
 	}
