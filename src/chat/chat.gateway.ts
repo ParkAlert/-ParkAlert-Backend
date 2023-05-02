@@ -12,7 +12,7 @@ import { Socket } from "dgram";
 
 import { Server } from "socket.io";
 
-@WebSocketGateway(5091, {
+@WebSocketGateway({
 	transports: ["websocket", "polling", "flashsocket"],
 	cors: { origin: "http://localhost:3000" },
 })
