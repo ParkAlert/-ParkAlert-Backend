@@ -14,7 +14,7 @@ import { Server } from "socket.io";
 
 @WebSocketGateway(5091, {
 	transports: ["websocket", "polling", "flashsocket"],
-	cors: { origin: "*" },
+	cors: { origin: "http://localhost:3000" },
 })
 export class ChatGateway implements OnModuleInit {
 	@WebSocketServer()
