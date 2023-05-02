@@ -5,19 +5,16 @@ import {
 	Post,
 	UsePipes,
 	Res,
-	Put,
 	ValidationPipe,
-	HttpStatus,
 	UseGuards,
 	Req,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { userDto, updatePasswordDto } from "./user.dto";
-import { ApiOperation, ApiTags, ApiResponse } from "@nestjs/swagger";
+import { userDto } from "./user.dto";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
 import { AuthService } from "../auth/auth.service";
-import * as cookieParser from "cookie-parser";
 
 @ApiTags("User")
 @Controller("users")
@@ -42,7 +39,7 @@ export class UserController {
 
 	@UseGuards(AuthGuard("local"))
 	@Post("/signin")
-	@ApiOperation({ summary: "Just signin" })
+	@ApiOperation({ summary: "singin and get access token" })
 	signin(
 		@Req() request: Request,
 		@Res({ passthrough: true }) res: any,

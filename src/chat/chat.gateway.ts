@@ -2,17 +2,12 @@ import { OnModuleInit } from "@nestjs/common";
 import {
 	WebSocketGateway,
 	SubscribeMessage,
-	WsResponse,
 	WebSocketServer,
-	WsException,
 	MessageBody,
 	ConnectedSocket,
 } from "@nestjs/websockets";
-import { Socket } from "dgram";
 
 import { Server } from "socket.io";
-import { JwtStrategy } from "../auth/jwt.strategy";
-import { AuthService } from "src/auth/auth.service";
 import { ChatService } from "./chat.service";
 import { Injectable } from "@nestjs/common";
 
@@ -26,6 +21,7 @@ export class ChatGateway implements OnModuleInit {
 	@WebSocketServer()
 	server: Server;
 	userEmail = "";
+	chatHistory = [];
 	onModuleInit() {
 		this.server.on("connection", socket => {
 			if (socket.handshake.headers.authorization) {
@@ -34,16 +30,27 @@ export class ChatGateway implements OnModuleInit {
 					""
 				);
 				this.userEmail = this.chatService.getUserInfo(token).email;
-				console.log(this.userEmail + " is Connected");
 			}
 
-			socket.join("chatRoom");
+			const target = socket.handshake.headers.chatwith;
+			const roomName = [this.userEmail, target].sort().join("");
+			socket.join(roomName);
 		});
 	}
 
 	@SubscribeMessage("newMessage")
 	onNewMessage(@MessageBody() body: any, @ConnectedSocket() socket: any) {
-		console.log(body);
-		this.server.emit("onMessage", "我是另一個人，我收到你發的 : " + body);
+		let tempUser = "";
+		if (socket.handshake.headers.authorization) {
+			const token = socket.handshake.headers.authorization.replace(
+				"Bearer ",
+				""
+			);
+			tempUser = this.chatService.getUserInfo(token).email;
+		}
+		const obj = {};
+		obj[tempUser] = body;
+		this.chatHistory.push(obj);
+		this.server.emit("onMessage", this.chatHistory);
 	}
 }
