@@ -1,10 +1,14 @@
 import { UserService } from "../user/user.service";
 import { Injectable, Inject } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-	constructor(@Inject(UserService) private readonly userService: UserService) {}
+	constructor(
+		@Inject(UserService) private readonly userService: UserService,
+		private readonly jwtService: JwtService
+	) {}
 	async validateUser(email: string, password: string) {
 		const user = await this.userService.findByEmail(email);
 
@@ -24,23 +28,13 @@ export class AuthService {
 		return user;
 	}
 
-	async isAuth(sessionId) {
-		const user = await this.userService.findUserFromSessionId(sessionId);
-		if (user) return { email: user.email, id: user["_id"] };
-		else return false;
+	generateJwt(email: string) {
+		const access_token: any = this.jwtService.sign({ email: email });
+		return access_token;
 	}
 
-	async saveAuth(email: string, sessionId: string) {
-		//use session id to find user
-		const user = await this.userService.saveSession(email, sessionId);
-		if (user) return user;
-		else return false;
-	}
-
-	async removeAuth(email: string) {
-		const user = await this.userService.removeSession(email);
-
-		return user;
-		//remove session
+	getUserInfo(token: string) {
+		const payload = this.jwtService.verify(token);
+		return payload;
 	}
 }
