@@ -6,24 +6,26 @@ import { ConfigService } from "@nestjs/config";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
+import { ChatModule } from "./chat/chat.module";
 import mongoFactory from "./config/mongo.config";
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      load: [mongoFactory],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>("mongo.uri"),
-      }),
-    }),
-    UserModule,
-    AuthModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		ConfigModule.forRoot({
+			load: [mongoFactory],
+		}),
+		MongooseModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: async (config: ConfigService) => ({
+				uri: config.get<string>("mongo.uri"),
+			}),
+		}),
+		UserModule,
+		AuthModule,
+		ChatModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}

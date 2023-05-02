@@ -8,14 +8,14 @@ import { UserSession, UserSessionSchema } from "./userSession.model";
 import { AuthService } from "../auth/auth.service";
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: UserSession.name, schema: UserSessionSchema },
-    ]),
-  ],
-  controllers: [UserController],
-  providers: [UserService, AuthService],
-  exports: [UserService],
+	imports: [
+		MongooseModule.forFeature([
+			{ name: User.name, schema: UserSchema },
+			{ name: UserSession.name, schema: UserSessionSchema },
+		]),
+	],
+	controllers: [UserController],
+	providers: [UserService, AuthService],
+	exports: [UserService],
 })
 export class UserModule {}
