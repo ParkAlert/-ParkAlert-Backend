@@ -12,7 +12,10 @@ import { Socket } from "dgram";
 
 import { Server } from "socket.io";
 
-@WebSocketGateway()
+@WebSocketGateway(5091, {
+	transports: ["websocket", "polling", "flashsocket"],
+	cors: { origin: "*" },
+})
 export class ChatGateway implements OnModuleInit {
 	@WebSocketServer()
 	server: Server;
@@ -30,9 +33,6 @@ export class ChatGateway implements OnModuleInit {
 	@SubscribeMessage("newMessage")
 	onNewMessage(@MessageBody() body: any, @ConnectedSocket() socket: any) {
 		console.log(body);
-		this.server.emit("onMessage", {
-			msg: "New Msg",
-			content: body,
-		});
+		this.server.emit("onMessage", "我是另一個人，我收到你發的 : " + body);
 	}
 }
