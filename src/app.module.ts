@@ -7,18 +7,15 @@ import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
 import { AuthModule } from "./auth/auth.module";
 import { ChatModule } from "./chat/chat.module";
-import mongoFactory from "./config/mongo.config";
 
 @Module({
 	imports: [
-		ConfigModule.forRoot({
-			load: [mongoFactory],
-		}),
+		ConfigModule.forRoot(),
 		MongooseModule.forRootAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
 			useFactory: async (config: ConfigService) => ({
-				uri: config.get<string>("mongo.uri"),
+				uri: config.get<string>("DBSTR"),
 			}),
 		}),
 		UserModule,
