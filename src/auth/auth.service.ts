@@ -34,7 +34,11 @@ export class AuthService {
 	}
 
 	getUserInfo(token: string) {
-		const payload = this.jwtService.verify(token);
-		return payload;
+		try {
+			const payload = this.jwtService.verify(token);
+			return payload;
+		} catch (e) {
+			return {};
+		}
 	}
 }

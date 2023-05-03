@@ -14,7 +14,7 @@ import { ConfigModule } from "@nestjs/config";
 		ConfigModule,
 		JwtModule.register({
 			global: true,
-			secret: "jwt secret",
+			secret: "parkalertsecretLoL",
 			signOptions: { expiresIn: "6000s" },
 		}),
 	],

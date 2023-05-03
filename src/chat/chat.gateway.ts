@@ -32,6 +32,7 @@ export class ChatGateway implements OnModuleInit {
 				this.userEmail = this.chatService.getUserInfo(token).email;
 			}
 
+			if (!this.userEmail) socket.disconnect();
 			const target = socket.handshake.headers.chatwith;
 			const roomName = [this.userEmail, target].sort().join("");
 			socket.join(roomName);
@@ -41,6 +42,7 @@ export class ChatGateway implements OnModuleInit {
 	@SubscribeMessage("newMessage")
 	onNewMessage(@MessageBody() body: any, @ConnectedSocket() socket: any) {
 		let tempUser = "";
+
 		if (socket.handshake.headers.authorization) {
 			const token = socket.handshake.headers.authorization.replace(
 				"Bearer ",
