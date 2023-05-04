@@ -13,7 +13,7 @@ import { Injectable } from "@nestjs/common";
 
 @WebSocketGateway({
 	transports: ["websocket", "polling", "flashsocket"],
-	cors: { origin: "http://localhost:3000" },
+	cors: true,
 })
 @Injectable()
 export class ChatGateway implements OnModuleInit {
