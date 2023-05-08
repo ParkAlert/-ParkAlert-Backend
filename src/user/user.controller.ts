@@ -15,6 +15,7 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
 import { AuthService } from "../auth/auth.service";
+import axios from "axios";
 
 @ApiTags("User")
 @Controller("users")
@@ -54,16 +55,12 @@ export class UserController {
 		summary: "Give the google token to signin and get access token",
 	})
 	async google_signin(@Body() body: oAuthDto) {
-		const response = await fetch(
+		const headers = { Authorization: `Bearer ${body.oAuthToken}` };
+		const res = await axios.get(
 			"https://www.googleapis.com/oauth2/v2/userinfo",
-			{
-				headers: {
-					Authorization: `Bearer ${body.oAuthToken}`,
-				},
-			}
+			{ headers }
 		);
-		const data = await response.json();
-		const jwt = this.authService.generateJwt(data.email);
+		const jwt = this.authService.generateJwt(res.data.email);
 		return jwt;
 	}
 }
