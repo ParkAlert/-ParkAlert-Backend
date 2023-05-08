@@ -28,3 +28,10 @@ export class updatePasswordDto {
 	@ApiProperty()
 	newPassword: string;
 }
+
+export class oAuthDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	oAuthToken: string;
+}
