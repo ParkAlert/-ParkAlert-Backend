@@ -21,8 +21,6 @@ export class ChatGateway implements OnModuleInit {
 	constructor(private readonly chatService: ChatService) {}
 	@WebSocketServer()
 	server: Server;
-	chatHistory = [];
-	roomName = "";
 	onModuleInit() {
 		this.server.on("connection", socket => {
 			let userEmail = "";
@@ -46,7 +44,7 @@ export class ChatGateway implements OnModuleInit {
 	}
 
 	@SubscribeMessage("newMessage")
-	onNewMessage(@MessageBody() body: any, @ConnectedSocket() socket: any) {
+	async onNewMessage(@MessageBody() body: any, @ConnectedSocket() socket: any) {
 		let userEmail = "";
 		let roomName = "";
 		if (socket.handshake.headers.authorization) {
@@ -70,6 +68,11 @@ export class ChatGateway implements OnModuleInit {
 			time: new Date().toLocaleString(),
 		};
 
-		this.server.to(roomName).emit("onMessage", msgObj);
+		const msgHistory = await this.chatService.updateChatHistory(
+			roomName,
+			msgObj
+		);
+
+		this.server.to(roomName).emit("onMessage", msgHistory);
 	}
 }

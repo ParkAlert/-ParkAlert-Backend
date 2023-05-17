@@ -16,3 +16,30 @@ export class msgDto {
 	@IsNotEmpty()
 	time: string;
 }
+export class historyDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	user1: string;
+
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	user2: string;
+}
+
+class singleChatDto {
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	target: string;
+
+	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	latestMsg: msgDto;
+}
+export class chatListDto {
+	@ApiProperty({ type: [singleChatDto] })
+	list: singleChatDto[];
+}
