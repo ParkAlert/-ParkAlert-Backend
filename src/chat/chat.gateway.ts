@@ -39,6 +39,8 @@ export class ChatGateway implements OnModuleInit {
 
 			if (!target) socket.disconnect();
 			roomName = [userEmail, target].sort().join("");
+
+			this.chatService.createChatRoom(roomName);
 			socket.join(roomName);
 		});
 	}

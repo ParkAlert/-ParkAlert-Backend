@@ -34,6 +34,21 @@ export class ChatService {
 		return results;
 	}
 
+	async createChatRoom(roomName: string) {
+		const chatRoom = await this.chatModel
+			.findOne({ roomName: roomName })
+			.exec();
+
+		if (chatRoom) return chatRoom;
+
+		const newChatRoom: any = await this.chatModel.create({
+			roomName: roomName,
+			chatHistory: [],
+		});
+
+		return newChatRoom;
+	}
+
 	async updateChatHistory(roomName: string, newChat: msgDto) {
 		const chatRoom = await this.chatModel
 			.findOne({ roomName: roomName })
@@ -45,7 +60,7 @@ export class ChatService {
 			await chatRoom.save();
 		} else {
 			//還未有聊天室
-			const newChatRoom: any = await this.chatModel.create({
+			await this.chatModel.create({
 				roomName: roomName,
 				chatHistory: [newChat],
 			});
