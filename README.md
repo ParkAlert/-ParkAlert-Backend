@@ -1,36 +1,31 @@
 # ParkAlert
-## Framework
-
-[Nest](https://github.com/nestjs/nest) 
+Framework: [Nest](https://github.com/nestjs/nest) 
 
 ## Installation
 
 ```bash
-$ npm install
+$ pnpm i
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
+$ pnpm run dev
 
 # production mode
-$ npm run start:prod
+$ pnpm run dev:prod
 ```
 
 ## Test
 
 ```bash
 # unit tests
-$ npm run test
+$ pnpm run test
 
 # e2e tests
-$ npm run test:e2e
+$ pnpm run test:e2e
 
 # test coverage
-$ npm run test:cov
+$ pnpm run test:cov
 ```
