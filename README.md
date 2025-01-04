@@ -7,7 +7,7 @@ Framework: [Nest](https://github.com/nestjs/nest)
 $ pnpm i
 ```
 
-## Running the app
+## Running the app2
 
 ```bash
 # development

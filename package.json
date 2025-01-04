@@ -1,10 +1,11 @@
 {
   "name": "park-alert-backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "packageManager": "pnpm@9.15.2",
   "scripts": {
     "build": "nest build",
     "dev": "nest start --watch",
