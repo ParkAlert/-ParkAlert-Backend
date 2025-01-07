@@ -9,3 +9,11 @@ services:
     environment:
       NODE_ENV: production
     command: node dist/main.js
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - app
