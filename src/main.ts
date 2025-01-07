@@ -14,7 +14,7 @@ async function bootstrap() {
   const port = address.port
   const appUrl = `${protocol}://${host}:${port}`
 	console.log(`Server is listening on: ${appUrl}`)
-	console.log(`API docs : ${appUrl}/api`)
+	console.log(`API docs : ${appUrl}/swagger`)
 }
 function setupSwagger(app: INestApplication) {
 	const builder = new DocumentBuilder()
@@ -24,6 +24,6 @@ function setupSwagger(app: INestApplication) {
 		.setVersion('1.0')
 		.build()
 	const document = SwaggerModule.createDocument(app, config)
-	SwaggerModule.setup('api', app, document)
+	SwaggerModule.setup('swagger', app, document)
 }
 bootstrap()
