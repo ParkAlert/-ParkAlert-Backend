@@ -1,11 +1,11 @@
-# 使用輕量級 nginx 鏡像
-FROM nginx:1.25.2
+# 使用官方 nginx-certbot 基底映像
+FROM jonasal/nginx-certbot:5.4.0
 
-# 複製 nginx 設定檔到容器內
-COPY nginx.conf /etc/nginx/nginx.conf
+# 確保 Let's Encrypt 憑證存放目錄持久化
+VOLUME /etc/letsencrypt
 
-# 暴露 80 埠
-EXPOSE 80
+# 暴露 80 和 443 端口
+EXPOSE 80 443
 
 # 啟動 Nginx
 CMD ["nginx", "-g", "daemon off;"]
