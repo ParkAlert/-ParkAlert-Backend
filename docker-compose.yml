@@ -11,17 +11,15 @@ services:
     command: node dist/main.js
 
   nginx:
-    build:
-      context: ./nginx
+    image: jonasal/nginx-certbot:3
     ports:
       - "80:80"
       - "443:443"
     environment:
       - CERTBOT_EMAIL=vigor01695@email.com
-      - RENEWAL_INTERVAL=8d     # 憑證自動檢查間隔
     volumes:
       - ./nginx_secrets:/etc/letsencrypt                  # 憑證持久化
-      - ./nginx/user_conf.d:/etc/nginx/user_conf.d:ro           # 掛載用戶配置到 user_conf.d
+      - ./user_conf.d:/etc/nginx/user_conf.d:ro           # 掛載用戶配置到 user_conf.d
     restart: always
     depends_on:
       - app
